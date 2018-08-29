@@ -1,0 +1,29 @@
+{
+  "name": "imfetch",
+  "version": "1.0.0",
+  "description": "let you use fetch api at node env",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pallyoung/imfetch.git"
+  },
+  "keywords": [
+    "fetch",
+    "nodejs",
+    "http",
+    "https",
+    "ajax"
+  ],
+  "author": "Spencer Ye",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/pallyoung/imfetch/issues"
+  },
+  "homepage": "https://github.com/pallyoung/imfetch#readme",
+  "devDependencies": {
+    "jest": "^23.5.0"
+  }
+}
