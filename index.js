@@ -2,68 +2,78 @@ const http = require('http');
 const https = require('https');
 const URL = require('url');
 
-function readComingMessage(comingMessaage){
-    return new Promise(function(resolve,reject){
+function readComingMessage(comingMessaage) {
+    return new Promise(function (resolve, reject) {
         let data = new Buffer(0);
         comingMessaage.on('data', function (chunk) {
             data = Buffer.concat([data, chunk]);
         });
         comingMessaage.on('end', function (chunk) {
-           resolve(data);
+            resolve(data);
         });
     });
-    
+
 }
 
-function Response(comingMessaage,url){
-    this._comingMessaage = comingMessaage;
-    this.url = comingMessaage.url;
-    this.type ='cros';
-    this.status = comingMessaage.statusCode;
-    this.ok = comingMessaage.ok;
-    this.statusText = comingMessaage.statusMessage;
-    this.bodyUsed = false;
+const BOUNDARY = ''
+class FormData {
+    constructor() {
+
+    }
+    append(name, value) {
+
+    }
 }
-Response.prototype = {
-    constructor:Response,
-    text:function(){
-        if(this.bodyUsed){
+
+class Response {
+    constructor(comingMessaage, url) {
+        this._comingMessaage = comingMessaage;
+        this.url = comingMessaage.url;
+        this.type = 'cros';
+        this.status = comingMessaage.statusCode;
+        this.ok = comingMessaage.ok;
+        this.statusText = comingMessaage.statusMessage;
+        this.bodyUsed = false;
+    }
+    text() {
+        if (this.bodyUsed) {
             throw new Error();
         }
         this.bodyUsed = true;
-        return readComingMessage(this._comingMessaage).then(function(buffer){
+        return readComingMessage(this._comingMessaage).then(function (buffer) {
             return buffer.toString('utf-8');
         });
-        
-    },
-    json:function(){
-        return this.text().then(function(v){
+
+    }
+    json() {
+        return this.text().then(function (v) {
             JSON.parse(v);
         });
-        
-    },
-    arrayBuffer:function(){
-        if(this.bodyUsed){
+
+    }
+    arrayBuffer() {
+        if (this.bodyUsed) {
             throw new Error();
         }
         this.bodyUsed = true;
         return readComingMessage(this._comingMessaage);
-    },
-    blob:function(){
-        if(this.bodyUsed){
+    }
+    blob() {
+        if (this.bodyUsed) {
             throw new Error();
         }
         this.bodyUsed = true;
-    },
-    error:function(){
-
-    },
-    clone:function(){
-
-    },
-    redirect:function(){
+    }
+    error() {
 
     }
+    clone() {
+
+    }
+    redirect() {
+
+    }
+
 }
 function fetch(url, config) {
     if (typeof url !== 'string') {
@@ -73,7 +83,7 @@ function fetch(url, config) {
     if (!url) {
         throw new Error('invalid url');
     }
-    config = config||{};
+    config = config || {};
     let httplient;
     if (url.startsWith('https')) {
         httpClient = https;
@@ -89,16 +99,17 @@ function fetch(url, config) {
             }
         });
         let headers = config.headers;
-        if(headers){
-            for(let o in headers){
-                request.setHeader(o,headers[o]);
+        if (headers) {
+            for (let o in headers) {
+                request.setHeader(o, headers[o]);
             }
         }
-        request.on('error',function(){
+        request.on('error', function () {
             reject('error');
         })
         request.end(config.body);
     })
 
 }
+fetch.FormData = FormData
 module.exports = fetch;
